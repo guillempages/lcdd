@@ -1,6 +1,7 @@
 0.4:  Change network protocol to TCP
 	Add support for user scroll and blink
 	Add C++ class to the library
+	Add autoconf support
 	WARNING: Not backward compatible!
 
 0.3:	Client also works without server
