@@ -1,3 +1,7 @@
+0.4:  Change network protocol to TCP
+	Add support for user scroll and blink
+	Add C++ class to the library
+	WARNING: Not backward compatible!
 
 0.3:	Client also works without server
 	Created lcd library (static and shared)
@@ -5,8 +9,8 @@
 	Can ask to server contents of both lines
 
 0.2: 	Various bugfixes
-	-Short strings no more doubled
-	-No more "outobfounds" on substr
+	-Short strings not doubled anymore
+	-No more "outofbounds" on substr
 	-Long date/time screen by default
 
 0.1: 	First release
