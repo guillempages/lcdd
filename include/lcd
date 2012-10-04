@@ -1,8 +1,63 @@
 #ifndef LCD_H_CPP
 #define LCD_H_CPP
 
-namespace lcd {
-  #include "lcd.h"
+#include <string>
+
+namespace __lcd {
+#include <lcd.h>
+}
+
+class LCD {
+  public:
+    LCD(const std::string & server="localhost", int port=11111, bool cleanOnExit=true);
+    ~LCD();
+
+    /**
+     * Opens a connection to the server
+     *  if port is negative, the specified in the constructor will be used
+     *  if server is empty, the specified in the constructor will be used
+     */
+    int connect(const std::string & server="", int port=-1,int timeout=2);
+
+    /**
+     * Closes the connection
+     */
+    int disconnect();
+
+    int sendLine(const std::string& text,int line=0);
+
+    int clear();
+    
+    int ping(int timeout=5);
+
+    bool connected();
+
+    static const int LINES=2;
+    static const int CHARS=16;
+
+  protected:
+    std::string server_;
+    int port_;
+
+    bool connected_;
+    bool cleanOnExit_;
 };
+
+inline int LCD::clear() {
+  for (int i=1; i<=LINES; i++) {
+    sendLine("",i);
+  }
+}
+
+inline LCD::~LCD() { 
+  if (cleanOnExit_) {
+     clear();
+  }
+  disconnect(); 
+}
+
+inline int LCD::disconnect() { connected_=false; return __lcd::lcd_CloseServer(); }
+
+inline bool LCD::connected() { return connected_; }
 
 #endif

@@ -1,10 +1,15 @@
+#ifdef HAVE_CONFIG_H
+#include "defines.h"
+#endif
+
+#include <stdlib.h>
 #include <iostream>
 #include <fstream>
 #include <string>
 
 using std::string;
 
-#include "lcd"
+#include <lcd>
 
 int main(int argc,char * argv[]) {
 
@@ -13,8 +18,16 @@ int main(int argc,char * argv[]) {
   char device[]="/dev/lcd0"; //should the server not be running  
   int timeoutValue=3; //seconds to wait for server to be ready
 
+  // Check arguments...
+  if (argc>1) {
+    if ((string(argv[1])=="-v") || (string(argv[1])=="--version")) {
+      std::cout << PACKAGE_NAME << " Version " << VERSION << std::endl;
+      exit(0);
+    }
+  }
+
   bool serverOnline=false;
-  if (lcd::getServer(port,server,timeoutValue)<0) {
+  if (__lcd::getServer(port,server,timeoutValue)<0) {
     perror("getServer error");
     serverOnline=false;
   } else {
@@ -26,15 +39,21 @@ int main(int argc,char * argv[]) {
   if (argc>=2) {
     line1+=argv[1];
     if (serverOnline) {
-      if (lcd::sendLine1(line1.c_str(),line1.length())<0)
+      int error;
+      if ((error=__lcd::lcd_SendLine(1,line1.c_str(),line1.length()))<0) {
+        std::cout << "SendLine1 returned " << error << std::endl;
         perror("sendLine1 error");
+      }
     }
   }
   if (argc>=3) {
     line2+=argv[2];
     if (serverOnline) {
-      if (lcd::sendLine2(line2.c_str(),line2.length())<0)
+      int error;
+      if ((error=__lcd::lcd_SendLine(2,line2.c_str(),line2.length()))<0) {
+        std::cout << "SendLine2 returned " << error << std::endl;
         perror("sendLine2 error");
+      }
     }
   }
   

@@ -1,3 +1,7 @@
+#ifdef HAVE_CONFIG_H
+#include <defines.h>
+#endif 
+
 #include <iomanip>
 #include <iostream>
 #include <fstream>
@@ -13,7 +17,7 @@
 
 #include "auxfunctions.h"
 
-#include "lcd"
+#include <lcd>
 
 using std::cerr;
 using std::endl;
@@ -120,45 +124,46 @@ void printDate(bool dots=true) {
       datestr << "Diss ";
       break;	
     case 7:
+    case 0:
       datestr << "Dium ";
       break;
     }
     datestr << setw(2) << setfill('0') << datetime->tm_mday << " "; 
     switch (datetime->tm_mon) {
-    case 1:
+    case 0:
       datestr << "Gen ";
       break;
-    case 2:
+    case 1:
       datestr << "Feb ";
       break;
-    case 3:
+    case 2:
       datestr << "Mar ";
       break;	
-    case 4:
+    case 3:
       datestr << "Abr ";
       break;	
-    case 5:
+    case 4:
       datestr << "Mai ";
       break;	
-    case 6:
+    case 5:
       datestr << "Jun ";
       break;	
-    case 7:
+    case 6:
       datestr << "Jul ";
       break;
-    case 8:
+    case 7:
       datestr << "Ago ";
       break;
-    case 9:
+    case 8:
       datestr << "Set ";
       break;
-    case 10:
+    case 9:
       datestr << "Oct ";
       break;	
-    case 11:
+    case 10:
       datestr << "Nov ";
       break;	
-    case 12:
+    case 11:
       datestr << "Des ";
       break;	
     }
@@ -167,7 +172,7 @@ void printDate(bool dots=true) {
   } else {
     datestr << 
       setw(2) << setfill('0') << datetime->tm_mday << datesep << 
-      setw(2) << setfill('0') << datetime->tm_mon;
+      setw(2) << setfill('0') << datetime->tm_mon+1;
   }
   timestr <<
     setw(2) << setfill('0') << datetime->tm_hour << timesep <<
@@ -192,6 +197,16 @@ int main(int argc, char *argv[]) {
   index2=0;
   line1empty=true;
   line2empty=true;
+
+  // Check arguments...
+  if (argc>1) {
+    if ((string(argv[1])=="-v") || (string(argv[1])=="--version")) {
+      std::cout << PACKAGE_NAME << " Version " << VERSION << std::endl;
+      exit(0);
+    }
+  }
+
+
  
   daemonize();
 	
