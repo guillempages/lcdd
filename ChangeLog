@@ -1,0 +1,12 @@
+
+0.3:	Client also works without server
+	Created lcd library (static and shared)
+	Server can be polled (ping->pong)
+	Can ask to server contents of both lines
+
+0.2: 	Various bugfixes
+	-Short strings no more doubled
+	-No more "outobfounds" on substr
+	-Long date/time screen by default
+
+0.1: 	First release

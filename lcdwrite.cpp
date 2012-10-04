@@ -1,54 +1,53 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <stdlib.h>
 
 using std::string;
 
-#include <arpa/inet.h>
-
-#include "auxfunctions.h"
-
+#include "lcd"
 
 int main(int argc,char * argv[]) {
 
-  int sock=createSocket();
   int port=11111;
+  char server[]="127.0.0.1";
+  char device[]="/dev/lcd0"; //should the server not be running  
+  int timeoutValue=3; //seconds to wait for server to be ready
 
-  struct sockaddr_in remote;
-
-  remote.sin_family=AF_INET;
-  remote.sin_port=htons(port);
-  remote.sin_addr.s_addr=inet_addr("127.0.0.1");
+  bool serverOnline=false;
+  if (lcd::getServer(port,server,timeoutValue)<0) {
+    perror("getServer error");
+    serverOnline=false;
+  } else {
+    serverOnline=true;
+  }
 
   string line1="",line2="";
-
-	if (argc>=2) {
+  
+  if (argc>=2) {
     line1+=argv[1];
+    if (serverOnline) {
+      if (lcd::sendLine1(line1.c_str(),line1.length())<0)
+        perror("sendLine1 error");
+    }
   }
-
   if (argc>=3) {
     line2+=argv[2];
+    if (serverOnline) {
+      if (lcd::sendLine2(line2.c_str(),line2.length())<0)
+        perror("sendLine2 error");
+    }
   }
-
-	if (sendToSocket(sock,"test",5,&remote)<0) {
-		std::ofstream lcd("/dev/lcd",	std::ios::out);
-		line1.resize(16,' ');
-		line1+=line2;
-		line1.resize(32,' ');
-		lcd << line1;
-		lcd.close();
-		exit(1);
-	}
-	perror("error?"); 
- 
-	line1="1"+line1;
-	line2="2"+line2;
-
-  if (sendToSocket(sock,line1.c_str(),line1.length(),&remote)<0)
-    perror("lcdwrite error:");
-  if (sendToSocket(sock,line2.c_str(),line2.length(),&remote)<0)
-    perror("lcdwrite error:");
   
+  //if the server is not running (or does not answer), 
+  //do it ourselves. Just write to the device
+  if (!serverOnline) {
+    string line=line1;
+    line.resize(16,' '); //no server->no scrolling; just cut
+    line+=line2;
+    line.resize(32,' '); //ditto
+    std::ofstream lcd(device,std::ios::out);
+    lcd << line;
+    lcd.close();
+  }
   return 0;
 }

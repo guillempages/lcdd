@@ -1,0 +1,8 @@
+#ifndef LCD_H_CPP
+#define LCD_H_CPP
+
+namespace lcd {
+  #include "lcd.h"
+};
+
+#endif
