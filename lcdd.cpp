@@ -4,7 +4,7 @@
 #include <string>
 #include <sstream>
 
-
+#include <stdlib.h>
 #include <sys/time.h>
 #include <sys/select.h>
 #include <time.h>
