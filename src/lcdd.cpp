@@ -187,7 +187,41 @@ void printDate(bool dots=true) {
     line1=datestr.str();
     line2="    "+timestr.str()+"    ";
   }
+}             
+
+std::string replaceSpecialChars(std::string& line) {
+
+  // replace special characters
+  for (int i=0; i<line.size(); i++) {
+    switch (line[i]) {
+      case '·':
+        line[i]='.';
+        break;
+
+      case 'à':
+        line[i]='a';
+        break;
+      case 'á':
+        line[i]='a';
+        break;
+      case 'ä':
+        line=line.substr(0,i)+"ae"+line.substr(i+1,line.size());
+        break;
+      case 'À':
+        line[i]='A';
+        break;
+      case 'Á':
+        line[i]='A';
+        break;
+      case 'Ä':
+        line=line.substr(0,i)+"Ae"+line.substr(i+1,line.size());
+        break;
+    }
+  }
+  return line;
 }
+
+ 
 
 int main(int argc, char *argv[]) {
 
@@ -207,8 +241,11 @@ int main(int argc, char *argv[]) {
   }
 
 
- 
-  daemonize();
+  if (argc == 1) { 
+    // only run as daemon if no parameters specified
+    daemonize();
+  }
+  
 	
   if (argc>=2) {
     line1=argv[1];
@@ -224,6 +261,11 @@ int main(int argc, char *argv[]) {
   printDate();
   write();
   
+  if (argc >1) {
+    //if parameters on the command line, do not run as daemon; just write and exit
+    exit(0);
+  }
+
   //open socket and listen...
   int sock=0;
   fd_set socket;
@@ -287,7 +329,8 @@ int main(int argc, char *argv[]) {
           if (line[1]=='1') { //top line
             line1=line.substr(2,line.length()-2);
             if (line1.size()!=0) {
-              line1.resize(max((int) line1.size(),16),' ');
+             replaceSpecialChars(line1);
+             line1.resize(max((int) line1.size(),16),' ');
               line1empty=false;
             } else {
               line1empty=true;

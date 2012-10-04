@@ -2,8 +2,8 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([Guillem lcd daemon], 0.4.0, guillempages@hotmail.com,lcdd)
-AM_INIT_AUTOMAKE#(lcd, 0.4.0)
+AC_INIT([Guillem lcd daemon], 0.4.1, guillempages@hotmail.com,lcdd)
+AM_INIT_AUTOMAKE#(lcd, 0.4.1)
 
 AM_CONFIG_HEADER(include/defines.h)
 AC_LANG_C
